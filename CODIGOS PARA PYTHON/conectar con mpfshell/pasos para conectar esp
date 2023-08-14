@@ -1,0 +1,28 @@
+abrimos terminal
+
+primer codigo "sudo chmod 777 /dev/ttyUSB0" (para abrir los puertos y deberas colocar la contraseña del ususario)
+
+borramos el flash "esptool.py --port /dev/ttyUSB0 erase_flash"
+
+nos vamos al directorio de descargas 
+
+vemos si tenemos el archivo en binario del esp
+
+escribimos "esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20230426-v1.20.0.bin"
+
+el codigo es para instalarle el bin al esp para que lo detecte 
+
+despues nos vamos a la carpeta donde tenemos nuestros archivos main.py y boot.py 
+
+en la direccion de la carpeta iniciamos mpfshell 
+
+abrimos el puerto "open ttyUSB0"
+
+
+
+**comandos de mpfshell**
+put (archivo) = subir/actualizar archivo
+rm (archivo) = remueve el archivo del esp
+repl = entra al repositorio 
+ctrl + D = resetea el repositorio para reiniciar 
+crtl + c = cierra el programa 
