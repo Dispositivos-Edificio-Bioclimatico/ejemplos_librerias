@@ -14,6 +14,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 
 #define seccion1 25
 #define seccion2 26
+#define compresor1 4
+#define compresor2 2
 
 #define GPIO0 16
 #define GPIO2 17
@@ -21,7 +23,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 #define GPIO0_PIN 3
 #define GPIO2_PIN 5
 
-boolean cs,ss;
+boolean cs,ss,ca,cb;
 char thingsboardServer[] = "tb.ier.unam.mx";
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
@@ -78,6 +80,10 @@ void setup() {
   pinMode(seccion2, OUTPUT);
   digitalWrite(seccion1, LOW);
   digitalWrite(seccion2, LOW);
+  pinMode(compresor1, OUTPUT);
+  pinMode(compresor2, OUTPUT);
+  digitalWrite(compresor1, LOW);
+  digitalWrite(compresor2, LOW);
   pinMode(PIN_BUTTON_A, INPUT);
   pinMode(PIN_BUTTON_B, INPUT);
   pinMode(PIN_BUTTON_C, INPUT);
@@ -108,6 +114,8 @@ void loop() {
   
   digitalWrite(seccion1, LOW);
   digitalWrite(seccion2, LOW);
+  digitalWrite(compresor1, LOW);
+  digitalWrite(compresor2, LOW);
   
   if(pressed_a == digitalRead(PIN_BUTTON_A)){
     modo_manual();
@@ -460,6 +468,8 @@ void modotb(){
 /*_______________________________________________________________________________*/
   digitalWrite(seccion1, LOW);
   digitalWrite(seccion2, LOW);
+  digitalWrite(compresor1, LOW);
+  digitalWrite(compresor2, LOW);
   if (count/100 ==0){
   publicaintervalo();
   }
@@ -471,11 +481,30 @@ void modotb(){
   stas= (sta*60);//
   static unsigned long intertb=tr;// tiempo real estatico
   Serial.println(intertb);
-  
+
+
+      if(ca == true){
+        digitalWrite(compresor1, HIGH);
+      }
+      else{
+      digitalWrite(compresor1, LOW);
+      }
+      if(cb == true){
+        digitalWrite(compresor2, HIGH);
+      }
+      else{
+        digitalWrite(compresor2, LOW);
+      }
+
+
   if (tr >= (intertb+mirs)){
   
+  
     if (tr <= (intertb+stas + mirs)){
-              
+
+      
+
+
       if (cs == true && ss == false){
 
           digitalWrite(seccion1, HIGH);
@@ -509,6 +538,8 @@ void modotb(){
     if (tr>= ttba || tr < ttbe){//&&  ||
     digitalWrite(seccion1, LOW);
     digitalWrite(seccion2, LOW);
+    digitalWrite(compresor1, LOW);
+    digitalWrite(compresor2, LOW);
     count=0;
     l_activo = 0;
     l2_activo = 0;
@@ -603,6 +634,16 @@ if (methodName.equals("cs")){
 
 if (methodName.equals("ss")){
   ss = data["params"];
+// Serial.print(ss);
+    
+  }
+  if (methodName.equals("ca")){
+  ca = data["params"];
+// Serial.print(ss);
+    
+  }
+  if (methodName.equals("cb")){
+  cb = data["params"];
 // Serial.print(ss);
     
   }
